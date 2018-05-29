@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using PetShop.Core.Models;
+using PetShop.Core.ViewModels;
 using PetShop.DataAccess.InMemory;
 
 namespace PetShop.WebUI.Controllers
@@ -11,10 +12,12 @@ namespace PetShop.WebUI.Controllers
     public class ProductManagerController : Controller
     {
         ProductRepository context;
+        ProductCategoryRepository productCategories;
 
         public ProductManagerController()
         {
             context = new ProductRepository();
+            productCategories = new ProductCategoryRepository();
 
         }
         // GET: ProductManager
@@ -24,19 +27,25 @@ namespace PetShop.WebUI.Controllers
             return View(products);
         }
 
-       public ActionResult Create() {
-            Product product = new Product();
-            return View(product);
+        public ActionResult Create()
+
+        {
+            ProductManagerViewModel viewModel = new ProductManagerViewModel();
+            viewModel.Product = new Product();
+            viewModel.ProductCategories = productCategories.Collection();
+            return View(viewModel);
         }
 
         [HttpPost]
-        public ActionResult Create(Product product) {
+        public ActionResult Create(Product product)
+        {
             if (!ModelState.IsValid)
             {
                 return View(product);
 
             }
-            else {
+            else
+            {
                 context.Insert(product);
                 context.Commit();
 
@@ -45,8 +54,8 @@ namespace PetShop.WebUI.Controllers
 
         }
 
-        [HttpPost]
-        public ActionResult Edit(String Id)
+     
+        public ActionResult Edit(string Id)
         {
             Product product = context.Find(Id);
             if (product == null)
@@ -55,13 +64,18 @@ namespace PetShop.WebUI.Controllers
             }
             else
             {
-                return View(product);
+                ProductManagerViewModel viewModel = new ProductManagerViewModel();
+                viewModel.Product = product;
+                viewModel.ProductCategories = productCategories.Collection();
+
+                return View(viewModel);
 
             }
         }
 
         [HttpPost]
-        public ActionResult Edit(Product product, string Id) {
+        public ActionResult Edit(Product product, string Id)
+        {
             Product productToEdit = context.Find(Id);
 
             if (productToEdit == null)
@@ -87,7 +101,7 @@ namespace PetShop.WebUI.Controllers
             }
         }
 
-        public ActionResult Delete(String Id)
+        public ActionResult Delete(string Id)
         {
             Product productToDelete = context.Find(Id);
 

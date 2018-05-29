@@ -13,33 +13,38 @@ namespace PetShop.DataAccess.InMemory
         ObjectCache cache = MemoryCache.Default;
         List<Product> products = new List<Product>();
 
-    
+
         public ProductRepository()
         {
             products = cache["products"] as List<Product>;
-            if (products == null) {
+            if (products == null)
+            {
                 products = new List<Product>();
 
             }
-        }       
+        }
 
-        public void Commit() {
+        public void Commit()
+        {
             cache["products"] = products;
         }
 
-        public void Insert(Product p) {
+        public void Insert(Product p)
+        {
             products.Add(p);
         }
 
-        public void Update(Product product) {
+        public void Update(Product product)
+        {
             Product productToUpdate = products.Find(p => p.Id == product.Id);
 
-            if(productToUpdate!= null)
+            if (productToUpdate != null)
             {
                 productToUpdate = product;
             }
 
-            else {
+            else
+            {
                 throw new Exception("Product not found");
 
             }
@@ -60,11 +65,13 @@ namespace PetShop.DataAccess.InMemory
             }
         }
 
-        public IQueryable<Product> Collection() {
+        public IQueryable<Product> Collection()
+        {
             return products.AsQueryable();
         }
 
-        public void Delete(string Id) {
+        public void Delete(string Id)
+        {
 
             Product productToDelete = products.Find(p => p.Id == Id);
 
@@ -78,6 +85,6 @@ namespace PetShop.DataAccess.InMemory
                 throw new Exception("Product not found");
             }
 
-         }
-     }
+        }
+    }
 }
