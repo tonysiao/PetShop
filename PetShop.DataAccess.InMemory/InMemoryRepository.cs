@@ -1,4 +1,5 @@
-﻿using PetShop.Core.Models;
+﻿using PetShop.Core.Contracts;
+using PetShop.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PetShop.DataAccess.InMemory
 {
-    public class InMemoryRepository<T> where T : BaseEntity
+    public class InMemoryRepository<T> : IRepository<T> where T : BaseEntity
     {
         ObjectCache cache = MemoryCache.Default;
         List<T> items;
@@ -22,9 +23,11 @@ namespace PetShop.DataAccess.InMemory
             }
         }
 
-        public void Commit() {
+        public void Commit()
+        {
             cache[className] = items;
         }
+
 
         public void Insert(T t) {
             items.Add(t);
